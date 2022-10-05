@@ -1,0 +1,8 @@
+type Domain{
+  id: String!
+}
+
+type Query {
+  getDomains: [Domain!]!
+  domain(id: ID!): Domain!
+}
