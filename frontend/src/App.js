@@ -2,6 +2,12 @@ import React from 'react'
 import "./App.css";
 import { useLazyQuery, gql } from "@apollo/client";
 import { useState } from "react";
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 
 const GET_DOMAINS = gql`
   query Domains($filter: String){
@@ -19,7 +25,6 @@ const GET_DOMAINS = gql`
 
 function App() {
 
-  // const { data, loading, error } = useQuery(GET_DOMAINS);
   const [searchFilter, setSearchFilter] = useState('*');
   const [executeSearch, { data }] = useLazyQuery(
     GET_DOMAINS
@@ -39,15 +44,32 @@ function App() {
 
       <br/>
 
-      {data ? data.getDomains.map((node) => (
-        <div>{JSON.stringify(node)}</div>
-      )): "wait"}
+      {data ? data.getDomains.map(({__typename , IRI, _updated, description,  isDefinedBy, label, level}) => (
+        <div>
+          <CardContent>
+            <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+              {IRI}
+            </Typography>
+            <Typography variant="h5" component="div">
+              {description}
+            </Typography>
+            <Typography sx={{ mb: 1.5 }} color="text.secondary">
+              {isDefinedBy}
+            </Typography>
+            <Typography variant="body2">
+              {label}
+            </Typography>
+            <Typography variant="body2">
+              {level}
+            </Typography>
+          </CardContent>
+        </div>
+      )): "loading..."}
 
       <br/>
 
       <button
         onClick={() =>{
-              console.log(searchFilter);
               executeSearch({
                 variables: { filter: searchFilter }
               })
