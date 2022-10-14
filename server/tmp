@@ -1,0 +1,80 @@
+const { Neo4jGraphQL } = require("@neo4j/graphql");
+const { ApolloServer, gql } = require("apollo-server");
+const neo4j = require("neo4j-driver");
+
+const typeDefs = gql`
+
+		interface node {
+				IRI: String!
+				_created: String
+				_updated: String
+				description: String
+				isDefinedBy: String
+				label: String
+				type: String
+		    parent: [node]
+		    children: [node]
+		}
+
+		type Movie implements Production {
+		    title: String!
+		    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+		    runtime: Int!
+		}
+
+		type Series implements Production {
+		    title: String!
+		    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+		    episodes: Int!
+		}
+
+		type Actor {
+		    name: String!
+		    actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+		}
+
+    type domain implements node {
+	    IRI: String,
+	    _created: String,
+	    _updated: String,
+			description: String,
+			isDefinedBy: String,
+			label: String,
+			level: String,
+			type: String,
+			parent: [node] @relationship(type: "parent", direction: IN)
+			children: node @relationship(type: "parent", direction: OUT)
+    }
+
+    
+
+
+
+    type Query {
+	  getDomains(filter: String): [domain]
+	  domain(id: ID!): domain!
+	  characterSearch(filter: String = "Orchestration"):[domain] @cypher(statement:"""
+	        CALL db.index.fulltext.queryNodes('gl_fulltext_node_index', $filter) YIELD node, score
+	        RETURN node
+	        ORDER BY score DESC
+	        LIMIT 5
+	    """)
+	}
+`;
+const driver = neo4j.driver(
+    "neo4j+s://a054c1cb.databases.neo4j.io:7687",
+    neo4j.auth.basic("neo4j", "RCerPW77WPGla7Echxy4Z8W0jUc0XomPqAqxhpSj7QI"),
+  	{ disableLosslessIntegers: true }
+);
+
+const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+neoSchema.getSchema().then((schema) => {
+  const server = new ApolloServer({
+      schema,
+  });
+
+  server.listen().then(({ url }) => {
+      console.log(`🚀 Server ready at ${url}`);
+  });
+})

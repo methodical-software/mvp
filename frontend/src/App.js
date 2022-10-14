@@ -10,8 +10,8 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 const GET_DOMAINS = gql`
-  query Domains($filter: String){
-    getDomains(filter: $filter){
+  query domain($filter: String){
+    characterSearch(filter: $filter){
       IRI,
       _updated,
       description,
@@ -44,8 +44,24 @@ function App() {
 
       <br/>
 
-      {data ? data.getDomains.map(({__typename , IRI, _updated, description,  isDefinedBy, label, level}) => (
-        <div>
+      <button
+        onClick={() =>{
+              executeSearch({
+                variables: { filter: searchFilter }
+              })
+            }
+          }
+      >
+        Submit!
+      </button>
+
+      <br/>
+
+      {data ? data.characterSearch.map(({__typename , IRI, _updated, description,  isDefinedBy, label, level}) => (
+        <div align="center">
+        <Box sx={{ maxWidth: 275, display: 'flex',
+          flexWrap: 'wrap',
+          alignContent: 'center'  }} >
           <CardContent>
             <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
               {IRI}
@@ -63,22 +79,13 @@ function App() {
               {level}
             </Typography>
           </CardContent>
+        </Box>
         </div>
       )): "loading..."}
 
-      <br/>
-
-      <button
-        onClick={() =>{
-              executeSearch({
-                variables: { filter: searchFilter }
-              })
-            }
-          }
-      >
-        Submit!
-      </button>
+      
     </div>
+
   );
 }
 
