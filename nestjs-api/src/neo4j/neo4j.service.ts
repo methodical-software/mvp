@@ -13,7 +13,7 @@ export class Neo4jService {
 			WITH node, score 
 			MATCH (parent)-[:parent]->(node)-[:parent]->(children)
 			WITH properties(node) as node, collect(properties(parent)) as parents, collect(properties(children)) as children, score 
-			RETURN {node: node, parents: parents} as json ORDER BY score DESC LIMIT 1`,
+			RETURN {node: node, parents: parents, children: children} as json ORDER BY score DESC LIMIT 1`,
 		  {
 		    filter: filter 
 		  }
