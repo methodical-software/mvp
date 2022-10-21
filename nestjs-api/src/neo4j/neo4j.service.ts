@@ -47,13 +47,21 @@ export class Neo4jService {
 			let children = record.children.map((child) => {
 			    child.id = child.IRI
 			    child.parents = [node.id]
+			    // child.templateName = "contactTemplate"
 			    delete child.IRI
 			    return child
 			})
+
+			
 			// push children to nodes
 			nodes = [...nodes, ...children]
+			nodes = nodes.map((node)=>{
+				node.templateName = "contactTemplate"
+				return node
+			})
 			answer.push(nodes)
 		}
+		// console.log(answer)
 		return answer
 		} finally {
 			await session.close()
