@@ -17,7 +17,7 @@ function App() {
 
   const handleClick = async (searchFilter) => {
       setIsLoading(true);
-      const baseURL = 'http://localhost:3200/neo4j/'
+      const baseURL = 'http://3.85.238.69:3200/neo4j/'
       const config = {
         headers: {
           "Access-Control-Allow-Origin": "*",
