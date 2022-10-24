@@ -12,8 +12,8 @@ export class Neo4jService {
 		const result = await session.run(
 		  `CALL db.index.fulltext.queryNodes('gl_fulltext_node_index', $filter) YIELD node, score 
 			WITH node, score 
-			MATCH (parent)-[:parent]->(node)-[:parent]->(children)
-			WITH properties(node) as node, node.IRI as node_id, collect(properties(parent)) as parents, collect(parent.IRI) as parents_ids, collect(properties(children)) as children, score 
+			MATCH (children)-[:parent]->(node)-[:parent]->(parent)
+			WITH node.IRI as node_id, properties(node) as node, collect(distinct properties(parent)) as parents, collect( distinct parent.IRI) as parents_ids, collect(distinct properties(children)) as children, score 
 			RETURN {node: node, node_id: node_id, parents: parents, parents_ids: parents_ids, children: children} as json ORDER BY score DESC LIMIT 5`,
 		  {
 		    filter: filter 
