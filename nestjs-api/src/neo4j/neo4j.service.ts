@@ -56,7 +56,7 @@ export class Neo4jService {
 			// push children to nodes
 			nodes = [...nodes, ...children]
 			nodes = nodes.map((node)=>{
-				node.templateName = "contactTemplate"
+				node.templateName = "ItemTemplate"
 				return node
 			})
 			answer.push(nodes)
