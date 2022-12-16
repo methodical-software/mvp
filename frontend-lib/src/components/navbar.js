@@ -114,7 +114,10 @@ const NavBar = ({getData}) => {
       </Box>
       <br/>
       <Button variant="contained"
-        onClick={() =>{ getData( searchFilter ) }}
+        onClick={() =>{ 
+          getData( searchFilter );
+          console.log("I am clicked")
+        }}
       >
         Submit!
       </Button>

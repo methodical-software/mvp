@@ -13,8 +13,8 @@ const App = () => {
 
   const getData = async (searchFilter) => {
       setIsLoading(true);
-      const baseURL = 'http://3.91.193.148:3200/neo4j/'
-      // const baseURL = 'http://localhost:3200/neo4j/'
+      // const baseURL = 'http://3.91.193.148:3200/neo4j/'
+      const baseURL = 'http://localhost:3200/neo4j/'
       const config = {
         headers: {
           "Access-Control-Allow-Origin": "*",

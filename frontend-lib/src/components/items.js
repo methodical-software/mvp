@@ -14,11 +14,12 @@ export default function NestedList({items}) {
         <ListSubheader component="div" id="nested-list-subheader">
           Nested List Items
         </ListSubheader>
-      }
+      }d
     >
       { 
         items.map((item, index) => {
-          return(<Item item={item} index={index} key="item_${index}" />);
+          console.log(item);
+          return(<Item item={item} index={index} key="item_{item.node.IRI}" />);
         })
       }
     </List>
