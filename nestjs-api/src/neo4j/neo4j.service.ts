@@ -5,16 +5,17 @@ import neo4j from 'neo4j-driver';
 export class Neo4jService {
 	constructor(@Inject("Neo4j") private readonly neo4j) {}
 
-	async findAll(): Promise<any> {
-		const filter = "Containers encapsulate"
+	async findAll(filter: string): Promise<any> {
 		const session = this.neo4j.session()
 		try {
 		const result = await session.run(
 		  `CALL db.index.fulltext.queryNodes('gl_fulltext_node_index', $filter) YIELD node, score 
-			WITH node, score 
-			MATCH (parent)-[:parent]->(node)-[:parent]->(children)
-			WITH properties(node) as node, collect(properties(parent)) as parents, collect(properties(children)) as children, score 
-			RETURN {node: node, parents: parents, children: children} as json ORDER BY score DESC LIMIT 1`,
+			WITH node, score ORDER BY score DESC LIMIT 10
+			MATCH (node)-[:parent]->(children)
+			WITH  node, collect(properties(children)) as children
+			MATCH (parent)-[:parent]->(node)
+			WITH  properties(node) as node, collect(properties(parent)) as parents, children
+			RETURN {node: node, parents: parents, children: children} as json`,
 		  {
 		    filter: filter 
 		  }
@@ -25,7 +26,6 @@ export class Neo4jService {
 		  const record = records[i]._fields[0]
 		  answer.push(record)
 		}
-
 		return answer
 		} finally {
 			await session.close()

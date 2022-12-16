@@ -6,6 +6,6 @@ export class Neo4jController {
 	constructor (private readonly service: Neo4jService){}
 	@Get()
 	async findAll(@Query('filter') query: {filter: string}) {
-		return this.service.findAll();
+		return this.service.findAll(query.toString());
 	}
 }
