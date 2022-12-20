@@ -5,7 +5,7 @@ import {Neo4jService} from './neo4j.service';
 export class Neo4jController {
 	constructor (private readonly service: Neo4jService){}
 	@Get()
-	async findAll(@Query('filter') query: {filter: string}) {
-		return this.service.findAll(query.toString());
+	async findAll(@Query('filter') query: {filter: string}, @Query('exclude') query_exclude:  [string]) {
+		return this.service.findAll(query.toString(), query_exclude);
 	}
 }
