@@ -37,9 +37,88 @@ import whiteteam from './icons/white/team.png'
 import blackunnode from './icons/black/unknown_node.png'
 import whiteunnode from './icons/white/unknown_node.png'
 
+const activeList = [
+  {
+    id: "certification",
+    label: "Certification",
+    passive: blackcert,
+    active: whitecert
+  },
+  {
+    id: "domain",
+    label: "Domain",
+    passive: blackdomain,
+    active: whitedomain
+  },
+  {
+    id: "framework_or_tool",
+    label: "Framework or Tool",
+    active: whitefrmwrkortool,
+    passive: blackfrmwrkortool
+  },
+  {
+    id: "metric",
+    label: "Metric",
+    active: whitemetric,
+    passive: blackmetric
+  },
+  {
+    id: "pattern",
+    label: "Pattern",
+    active: whitepattern,
+    passive: blackpattern
+  },
+  {
+    id: "person",
+    label: "Person",
+    active: whiteperson,
+    passive: blackperson
+  },
+  {
+    id: "perspective",
+    label: "Perspective",
+    active: whiteperspective,
+    passive: blackperspective
+  },
+  {
+    id: "project",
+    label: "Project",
+    active: whiteproject,
+    passive: blackproject
+  },
+  {
+    id: "roleDescription",
+    label: "Role Description",
+    active: whiteroledescription,
+    passive: blackroledescription
+  },
+  {
+    id: "synonym",
+    label: "Synonym",
+    active: whitesynonym,
+    passive: blacksynonym
+  },
+  {
+    id: "team",
+    label: "Team",
+    active: whiteteam,
+    passive: blackteam
+  },
+  {
+    id: "unnode",
+    label: "Unnode",
+    active: whiteunnode,
+    passive: blackunnode
+  },
+]
+let excludeState = {}
+activeList.map((o, key) => { 
+ excludeState[o.id] = true
+}, {})
+
 const NavBar = ({getData}) => {
-  
   const [searchFilter, setSearchFilter] = useState('')
+  const [exclude, setExclude] = useState(excludeState)
   const [activeCert,setActiveCert]=useState(false)
   const [activeDomain,setActiveDomain]=useState(false)
   const [activeFrmwrkOrTool,setActiveFrmwrkOrTool]=useState(false)
@@ -52,6 +131,22 @@ const NavBar = ({getData}) => {
   const [activeSynonym,setActiveSynonym]=useState(false)
   const [activeTeam,setActiveTeam]=useState(false)
   const [activeUnnode,setActiveUnnode]=useState(false)
+
+  const filters = activeList.map((filter, index) =>(
+    <IconButton key={filter.id} size="large" color="inherit" title={filter.label} onClick={() => { 
+      handleFilterClick(filter.id, index) }
+    }> 
+    <img src={ 
+      exclude[filter.id]? activeList[index]["active"] : activeList[index]["passive"] 
+    } height="20" width="20"/> </IconButton>))
+
+  const handleFilterClick = (filterId, index) => {
+    const val = exclude[filterId]
+    setExclude( oldFilterState => ({
+      ...oldFilterState,
+      [filterId]: !val,
+    }))
+  }
 
   return (
     <>
@@ -70,53 +165,18 @@ const NavBar = ({getData}) => {
       </div>
       
       <div>
+      
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar sx={{ justifyContent: "center" }}>
-            <IconButton size="large" color="inherit" onClick={e => { setActiveCert(!activeCert) }}>
-              <img src={ activeCert? blackcert : whitecert } height="20" width="20"/>
-            </IconButton>
-            <IconButton size="large" color="inherit" onClick={e => { setActiveDomain(!activeDomain) }}>
-              <img src={ activeDomain? blackdomain : whitedomain } height="20" width="20"/>
-            </IconButton>
-            <IconButton size="large" color="inherit" onClick={e => { setActiveFrmwrkOrTool(!activeFrmwrkOrTool) }}>
-              <img src={ activeFrmwrkOrTool? blackfrmwrkortool : whitefrmwrkortool } height="20" width="20"/>
-            </IconButton>
-            <IconButton size="large" color="inherit" onClick={e => { setActiveMetric(!activeMetric) }}>
-              <img src={ activeMetric? blackmetric : whitemetric } height="20" width="20"/>
-            </IconButton>
-            <IconButton size="large" color="inherit" onClick={e => { setActivePattern(!activePattern) }}>
-              <img src={ activePattern? blackpattern : whitepattern } height="20" width="20"/>
-            </IconButton>
-            <IconButton size="large" color="inherit" onClick={e => { setActivePerson(!activePerson) }}>
-              <img src={ activePerson? blackperson : whiteperson } height="20" width="20"/>
-            </IconButton>
-            <IconButton size="large" color="inherit" onClick={e => { setActivePerspective(!activePerspective) }}>
-              <img src={ activePerspective? blackperspective : whiteperspective } height="20" width="20"/>
-            </IconButton>
-            <IconButton size="large" color="inherit" onClick={e => { setActiveProject(!activeProject) }}>
-              <img src={ activeProject? blackproject : whiteproject } height="20" width="20"/>
-            </IconButton>
-            <IconButton size="large" color="inherit" onClick={e => { setActiveRoleDescription(!activeRoleDescription) }}>
-              <img src={ activeRoleDescription? blackroledescription : whiteroledescription } height="20" width="20"/>
-            </IconButton>
-            <IconButton size="large" color="inherit" onClick={e => { setActiveSynonym(!activeSynonym) }}>
-              <img src={ activeSynonym? blacksynonym : whitesynonym } height="20" width="20"/>
-            </IconButton>
-            <IconButton size="large" color="inherit" onClick={e => { setActiveTeam(!activeTeam) }}>
-              <img src={ activeTeam? blackteam : whiteteam } height="20" width="20"/>
-            </IconButton>
-            <IconButton size="large" color="inherit" onClick={e => { setActiveUnnode(!activeUnnode) }}>
-              <img src={ activeUnnode? blackunnode : whiteunnode } height="20" width="20"/>
-            </IconButton>
+            {filters}
           </Toolbar>
         </AppBar>
       </Box>
       <br/>
       <Button variant="contained"
         onClick={() =>{ 
-          getData( searchFilter );
-          console.log("I am clicked")
+          getData( searchFilter, exclude );
         }}
       >
         Submit!

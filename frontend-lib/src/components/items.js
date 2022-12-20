@@ -18,7 +18,6 @@ export default function NestedList({items}) {
     >
       { 
         items.map((item, index) => {
-          console.log(item);
           return(<Item item={item} index={index} key="item_{item.node.IRI}" />);
         })
       }

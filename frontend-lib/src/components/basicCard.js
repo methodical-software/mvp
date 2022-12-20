@@ -14,6 +14,9 @@ export default function BasicCard({item}) {
         <Typography sx={{ mb: 1.5 }} color="text.secondary">
           {item.label}
         </Typography>
+        <Typography sx={{ mb: 1.5 }} color="text.secondary">
+          {item.type}
+        </Typography>
         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
           {item.description}
         </Typography>

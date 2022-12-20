@@ -11,8 +11,16 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [err, setErr] = useState('')
 
-  const getData = async (searchFilter) => {
+  const getData = async (searchFilter, exclude) => {
       setIsLoading(true);
+      const asArray = Object.entries(exclude);
+      const filtered = asArray.filter(([key, value]) => {
+        return !value
+      });
+
+      const left = Object.fromEntries(filtered);
+      const send = Object.keys(left).length > 0 ? Object.keys(left) : ['']
+
       // const baseURL = 'http://3.91.193.148:3200/neo4j/'
       const baseURL = 'http://localhost:3200/neo4j/'
       const config = {
@@ -21,7 +29,7 @@ const App = () => {
           "Content-Type": "application/json",
           "Accept": "application/json, text/plain, */*"
         },
-        params: { filter: searchFilter }
+        params: { filter: searchFilter, exclude: send }
       }
       try {
         await axios.get(baseURL, config).then((res) => {
