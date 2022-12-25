@@ -9,11 +9,13 @@ export class Neo4jService {
 		const session = this.neo4j.session()
 		const query = `CALL db.index.fulltext.queryNodes('gl_fulltext_node_index', $filter) YIELD node, score
 		WHERE not any(label IN labels(node) WHERE label in $exclude) 
-			WITH node, score ORDER BY score DESC LIMIT 10
-			MATCH (node)-[:parent]->(children)
-			WITH  node, collect(properties(children)) as children
-			MATCH (parent)-[:parent]->(node)
-			WITH  properties(node) as node, collect(properties(parent)) as parents, children
+			WITH node, score ORDER BY score DESC LIMIT 25
+			OPTIONAL MATCH (node)-[:parent]->(parent)
+			WHERE not any(label IN labels(parent) WHERE label in $exclude) 
+			WITH  node, collect(properties(parent)) as parents
+			OPTIONAL MATCH (children)-[:parent]->(node)
+			WHERE not any(label IN labels(children) WHERE label in $exclude)
+			WITH  properties(node) as node, collect(properties(children)) as children, parents
 			RETURN {node: node, parents: parents, children: children} as json`
 		try {
 		const result = await session.run(query, { filter: filter, exclude: exclude })
