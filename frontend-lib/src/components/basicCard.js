@@ -24,12 +24,9 @@ export default function BasicCard({item}) {
           {item.id}
         </Typography>
         <Typography variant="body2">
-          {item.isDefinedBy}
+          <a href = {item.isDefinedBy}> {item.isDefinedBy} </a>
         </Typography>
       </CardContent>
-      <CardActions>
-        <Button size="small">Learn More</Button>
-      </CardActions>
     </Card>
   );
 }

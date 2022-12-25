@@ -21,7 +21,7 @@ const App = () => {
       const left = Object.fromEntries(filtered);
       const send = Object.keys(left).length > 0 ? Object.keys(left) : ['']
 
-      // const baseURL = 'http://3.91.193.148:3200/neo4j/'
+      //const baseURL = 'http://3.91.193.148:3200/neo4j/'
       const baseURL = 'http://localhost:3200/neo4j/'
       const config = {
         headers: {

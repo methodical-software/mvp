@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { FamDiagram } from 'basicprimitivesreact'
 import { GroupByType, PageFitMode, Enabled, Colors } from 'basicprimitives'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -119,18 +119,10 @@ activeList.map((o, key) => {
 const NavBar = ({getData}) => {
   const [searchFilter, setSearchFilter] = useState('')
   const [exclude, setExclude] = useState(excludeState)
-  const [activeCert,setActiveCert]=useState(false)
-  const [activeDomain,setActiveDomain]=useState(false)
-  const [activeFrmwrkOrTool,setActiveFrmwrkOrTool]=useState(false)
-  const [activeMetric,setActiveMetric]=useState(false)
-  const [activePattern,setActivePattern]=useState(false)
-  const [activePerson,setActivePerson]=useState(false)
-  const [activePerspective,setActivePerspective]=useState(false)
-  const [activeProject,setActiveProject]=useState(false)
-  const [activeRoleDescription,setActiveRoleDescription]=useState(false)
-  const [activeSynonym,setActiveSynonym]=useState(false)
-  const [activeTeam,setActiveTeam]=useState(false)
-  const [activeUnnode,setActiveUnnode]=useState(false)
+  useEffect(() => {
+    console.log("correct exclude: ", exclude)
+    getData( searchFilter, exclude );
+  }, [exclude]);
 
   const filters = activeList.map((filter, index) =>(
     <IconButton key={filter.id} size="large" color="inherit" title={filter.label} onClick={() => { 
@@ -140,9 +132,10 @@ const NavBar = ({getData}) => {
       exclude[filter.id]? activeList[index]["active"] : activeList[index]["passive"] 
     } height="20" width="20"/> </IconButton>))
 
-  const handleFilterClick = (filterId, index) => {
+  const handleFilterClick = async (filterId, index) => {
+    console.log("exclude this: ", exclude)
     const val = exclude[filterId]
-    setExclude( oldFilterState => ({
+    await setExclude( oldFilterState => ({
       ...oldFilterState,
       [filterId]: !val,
     }))
@@ -158,7 +151,7 @@ const NavBar = ({getData}) => {
             fullWidth
             label="Search"
             onChange={(e) => {
-              setSearchFilter(e.target.value)
+              setSearchFilter(e.target.value);
             }}
           />
         </div>
